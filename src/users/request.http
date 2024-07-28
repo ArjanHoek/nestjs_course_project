@@ -9,8 +9,8 @@ POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
-  "email": "justin@hawkins.com",
-  "password": "justin"
+  "email": "jim@reeves.com",
+  "password": "jim"
 }
 
 ### SIGNIN
@@ -19,8 +19,15 @@ Content-Type: application/json
 
 {
   "email": "justin@hawkins.com",
-  "password": "justin1"
+  "password": "justin"
 }
+
+### GET PROFILE
+GET http://localhost:3000/auth/profile
+
+
+### SIGNOUT
+POST http://localhost:3000/auth/signout
 
 ### Update user
 PATCH  http://localhost:3000/auth/20ce0c62-adc6-4404-b8d1-23133e708a8f
@@ -33,5 +40,3 @@ Content-Type: application/json
 
 ### Delete user
 DELETE http://localhost:3000/auth/8f83769c-3b51-4333-9ac4-a31ad15b2847
-
-

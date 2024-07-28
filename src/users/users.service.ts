@@ -23,7 +23,7 @@ export class UsersService {
     }
   }
 
-  public async findOneBy(where: FindOptionsWhere<User>) {
+  private async findOneBy(where: FindOptionsWhere<User>) {
     const user = await this.repo.findOne({
       where,
       select: { id: true, email: true, hash: true },
@@ -34,6 +34,16 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  public async findOneById(id: string) {
+    if (!id) return null;
+    return this.findOneBy({ id });
+  }
+
+  public async findOneByEmail(email: string) {
+    if (!email) return null;
+    return this.findOneBy({ email });
   }
 
   public find(email: string = '') {

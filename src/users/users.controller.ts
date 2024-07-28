@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Session,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dtos';
@@ -22,21 +23,42 @@ export class UsersController {
   ) {}
 
   @Serialize<UserDto>(UserDto)
+  @Get('profile')
+  getProfile(@Session() { userId }: any) {
+    return this.usersService.findOneById(userId);
+  }
+
+  @Post('signout')
+  public signout(@Session() session: any) {
+    session.userId = null;
+  }
+
+  @Serialize<UserDto>(UserDto)
   @Post('signup')
-  public createUser(@Body() { email, password }: CreateUserDto) {
-    return this.authService.signup(email, password);
+  public async signUp(
+    @Body() { email, password }: CreateUserDto,
+    @Session() session: any,
+  ) {
+    const user = await this.authService.signup(email, password);
+    session.userId = user.id;
+    return user;
   }
 
   @Serialize(UserDto)
   @Post('signin')
-  public signIn(@Body() { email, password }: CreateUserDto) {
-    return this.authService.signin(email, password);
+  public async signIn(
+    @Body() { email, password }: CreateUserDto,
+    @Session() session: any,
+  ) {
+    const user = await this.authService.signin(email, password);
+    session.userId = user.id;
+    return user;
   }
 
   @Serialize<UserDto>(UserDto)
   @Get(':id')
   public findUser(@Param('id') id: string) {
-    return this.usersService.findOneBy({ id });
+    return this.usersService.findOneById(id);
   }
 
   @Serialize<UserDto>(UserDto)
