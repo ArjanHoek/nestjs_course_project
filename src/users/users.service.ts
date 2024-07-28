@@ -1,27 +1,32 @@
 import * as argon from 'argon2';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto, UpdateUserDto } from './dtos';
+import { UpdateUserDto } from './dtos';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-  public async create({ email, password }: CreateUserDto) {
-    return await this.repo.save(
-      this.repo.create({
-        email,
-        hash: await argon.hash(password),
-      }),
-    );
+  public async create(email: string, hash: string) {
+    const newUser = this.repo.create({ email, hash });
+
+    try {
+      return await this.repo.save(newUser);
+    } catch (error) {
+      throw new BadRequestException('Email already in use');
+    }
   }
 
-  public async findOne(id: string) {
+  public async findOneBy(where: FindOptionsWhere<User>) {
     const user = await this.repo.findOne({
-      where: { id },
-      select: { id: true, email: true },
+      where,
+      select: { id: true, email: true, hash: true },
     });
 
     if (!user) {

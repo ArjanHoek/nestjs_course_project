@@ -1,16 +1,25 @@
 ### GET USER
-GET http://localhost:3000/auth/20ce0c62-adc6-4404-b8d1-23133e708a8f
+GET http://localhost:3000/auth/9338c7ce-dfad-4e3a-9d4a-59a05f406d4b
 
 ### GET USERS
-GET http://localhost:3000/auth?email=admin2@test.com
+GET http://localhost:3000/auth?email=josh@ritter.com
 
-### CREATE USER
+### CREATE USER / SIGNUP
 POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
-  "email": "stanley@kubrick.com",
-  "password": "stanley"
+  "email": "justin@hawkins.com",
+  "password": "justin"
+}
+
+### SIGNIN
+POST http://localhost:3000/auth/signin
+Content-Type: application/json
+
+{
+  "email": "justin@hawkins.com",
+  "password": "justin1"
 }
 
 ### Update user
