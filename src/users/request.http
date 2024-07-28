@@ -1,5 +1,10 @@
+### GET USER
+GET http://localhost:3000/auth/20ce0c62-adc6-4404-b8d1-23133e708a8f
 
-### Create new user
+### GET USERS
+GET http://localhost:3000/auth?email=admin2@test.com
+
+### CREATE USER
 POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
@@ -7,13 +12,6 @@ Content-Type: application/json
   "email": "stanley@kubrick.com",
   "password": "stanley"
 }
-
-### Get users
-GET http://localhost:3000/auth?email=admin@test.com
-
-### Get user
-GET http://localhost:3000/auth/1ee521a8-2dad-4c4a-a708-c0851d333e4f
-
 
 ### Update user
 PATCH  http://localhost:3000/auth/20ce0c62-adc6-4404-b8d1-23133e708a8f
@@ -23,7 +21,6 @@ Content-Type: application/json
   "email": "admin2@test.com",
   "test": "admin123"
 }
-
 
 ### Delete user
 DELETE http://localhost:3000/auth/8f83769c-3b51-4333-9ac4-a31ad15b2847
