@@ -1,32 +1,49 @@
 import { Test } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { UsersService } from './users.service';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-
-const usersServiceMock: Partial<UsersService> = {
-  create: (email: string) => Promise.resolve({ id: '3', email, hash: 'test' }),
-  findOneByEmail: () => {
-    throw new NotFoundException();
-  },
-};
-
-const createService = async () =>
-  (
-    await Test.createTestingModule({
-      providers: [
-        AuthService,
-        {
-          provide: UsersService,
-          useValue: usersServiceMock,
-        },
-      ],
-    }).compile()
-  ).get(AuthService);
+import {
+  BadRequestException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { User } from './user.entity';
 
 describe('AuthService', () => {
   let service: AuthService;
+  let users: User[] = [];
+
+  const findOneByEmailMockFn = jest.fn((email: string) => {
+    const user = users.find((user) => user.email === email);
+    return Promise.resolve(user);
+  });
+
+  const createMockFn = jest.fn((email: string, hash: string) => {
+    const user = {
+      id: `${Math.floor(Math.random() * 99999)}${+new Date()}`,
+      email,
+      hash,
+    };
+    users.push(user);
+    return Promise.resolve(user);
+  });
+
+  const usersServiceMock: Partial<UsersService> = {
+    findOneByEmail: findOneByEmailMockFn,
+    create: createMockFn,
+  };
+
+  const createService = async () =>
+    (
+      await Test.createTestingModule({
+        providers: [
+          AuthService,
+          { provide: UsersService, useValue: usersServiceMock },
+        ],
+      }).compile()
+    ).get(AuthService);
 
   beforeEach(async () => {
+    users = [];
     service = await createService();
   });
 
@@ -42,9 +59,9 @@ describe('AuthService', () => {
   });
 
   it('throws an error if user signs up with email that is already used', async () => {
-    jest.spyOn(usersServiceMock, 'create').mockImplementationOnce(() => {
-      throw new BadRequestException('Email already in use');
-    });
+    createMockFn.mockRejectedValueOnce(
+      new BadRequestException('Email already in use'),
+    );
 
     await expect(service.signup('test@test.com', 'password')).rejects.toThrow(
       BadRequestException,
@@ -52,8 +69,27 @@ describe('AuthService', () => {
   });
 
   it('throws if signin is called with an unused email', async () => {
-    await expect(service.signin('test@test.com', 'password')).rejects.toThrow(
+    findOneByEmailMockFn.mockRejectedValueOnce(new NotFoundException(''));
+
+    await expect(service.signin('test@test.com', 'correct')).rejects.toThrow(
       NotFoundException,
     );
+  });
+
+  it('throws if an invalid password is provided', async () => {
+    const userMock = service.signup('test@test.com', 'correct');
+    findOneByEmailMockFn.mockReturnValueOnce(userMock);
+
+    await expect(service.signin('test@test.com', 'wrong')).rejects.toThrow(
+      UnauthorizedException,
+    );
+  });
+
+  it('returns a user if correct password is provided', async () => {
+    const { id, email } = await service.signup('test@test.com', 'correct');
+
+    await expect(
+      service.signin('test@test.com', 'correct'),
+    ).resolves.toStrictEqual({ id, email });
   });
 });
