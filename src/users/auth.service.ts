@@ -6,11 +6,11 @@ import { UsersService } from './users.service';
 export class AuthService {
   constructor(private usersService: UsersService) {}
 
-  public async signup(email: string, password: string) {
+  public async signUp(email: string, password: string) {
     return this.usersService.create(email, await argon.hash(password));
   }
 
-  public async signin(email = '', password: string) {
+  public async signIn(email = '', password: string) {
     const { hash, ...user } = await this.usersService.findOneByEmail(email);
 
     const isVerfied = await argon.verify(hash, password);

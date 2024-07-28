@@ -44,7 +44,7 @@ export class UsersController {
     @Body() { email, password }: CreateUserDto,
     @Session() session: any,
   ) {
-    const user = await this.authService.signup(email, password);
+    const user = await this.authService.signUp(email, password);
     session.userId = user.id;
     return user;
   }
@@ -55,7 +55,7 @@ export class UsersController {
     @Body() { email, password }: CreateUserDto,
     @Session() session: any,
   ) {
-    const user = await this.authService.signin(email, password);
+    const user = await this.authService.signIn(email, password);
     session.userId = user.id;
     return user;
   }

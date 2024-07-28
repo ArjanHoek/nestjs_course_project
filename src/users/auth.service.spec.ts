@@ -53,7 +53,7 @@ describe('AuthService', () => {
 
   it('creates a new user with a hashed password', async () => {
     const password = 'test123';
-    const { hash } = await service.signup('test@test.com', password);
+    const { hash } = await service.signUp('test@test.com', password);
     expect(hash).toBeDefined();
     expect(hash).not.toEqual(password);
   });
@@ -63,7 +63,7 @@ describe('AuthService', () => {
       new BadRequestException('Email already in use'),
     );
 
-    await expect(service.signup('test@test.com', 'password')).rejects.toThrow(
+    await expect(service.signUp('test@test.com', 'password')).rejects.toThrow(
       BadRequestException,
     );
   });
@@ -71,25 +71,25 @@ describe('AuthService', () => {
   it('throws if signin is called with an unused email', async () => {
     findOneByEmailMockFn.mockRejectedValueOnce(new NotFoundException(''));
 
-    await expect(service.signin('test@test.com', 'correct')).rejects.toThrow(
+    await expect(service.signIn('test@test.com', 'correct')).rejects.toThrow(
       NotFoundException,
     );
   });
 
   it('throws if an invalid password is provided', async () => {
-    const userMock = service.signup('test@test.com', 'correct');
+    const userMock = service.signUp('test@test.com', 'correct');
     findOneByEmailMockFn.mockReturnValueOnce(userMock);
 
-    await expect(service.signin('test@test.com', 'wrong')).rejects.toThrow(
+    await expect(service.signIn('test@test.com', 'wrong')).rejects.toThrow(
       UnauthorizedException,
     );
   });
 
   it('returns a user if correct password is provided', async () => {
-    const { id, email } = await service.signup('test@test.com', 'correct');
+    const { id, email } = await service.signUp('test@test.com', 'correct');
 
     await expect(
-      service.signin('test@test.com', 'correct'),
+      service.signIn('test@test.com', 'correct'),
     ).resolves.toStrictEqual({ id, email });
   });
 });
