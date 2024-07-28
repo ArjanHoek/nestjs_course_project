@@ -10,15 +10,18 @@ export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
   public async create({ email, password }: CreateUserDto) {
-    const hash = await argon.hash(password);
-    const user = this.repo.create({ email, hash });
-    return await this.repo.save(user);
+    return await this.repo.save(
+      this.repo.create({
+        email,
+        hash: await argon.hash(password),
+      }),
+    );
   }
 
   public async findOne(id: string) {
     const user = await this.repo.findOne({
       where: { id },
-      select: { id: true, email: true, hash: true },
+      select: { id: true, email: true },
     });
 
     if (!user) {
@@ -31,7 +34,7 @@ export class UsersService {
   public find(email: string = '') {
     return this.repo.find({
       where: { email },
-      select: { id: true, email: true, hash: true },
+      select: { id: true, email: true },
     });
   }
 
