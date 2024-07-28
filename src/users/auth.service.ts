@@ -1,9 +1,5 @@
 import * as argon from 'argon2';
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 @Injectable()
@@ -14,18 +10,12 @@ export class AuthService {
     return this.usersService.create(email, await argon.hash(password));
   }
 
-  public async signin(email: string, password: string) {
-    const user = await this.usersService.findOneByEmail(email);
+  public async signin(email = '', password: string) {
+    const { hash, ...user } = await this.usersService.findOneByEmail(email);
 
-    if (!user) {
-      throw new NotFoundException('user not found');
-    }
+    const isVerfied = await argon.verify(hash, password);
 
-    const isVerfied = await argon.verify(user.hash, password);
-
-    if (!isVerfied) {
-      throw new UnauthorizedException();
-    }
+    if (!isVerfied) throw new UnauthorizedException();
 
     return user;
   }

@@ -37,12 +37,10 @@ export class UsersService {
   }
 
   public async findOneById(id: string) {
-    if (!id) return null;
     return this.findOneBy({ id });
   }
 
   public async findOneByEmail(email: string) {
-    if (!email) return null;
     return this.findOneBy({ email });
   }
 
