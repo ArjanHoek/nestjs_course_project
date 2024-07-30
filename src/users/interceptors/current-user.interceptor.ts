@@ -5,7 +5,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { UsersService } from '../users.service';
-import { Observable } from 'rxjs';
+import { NotFoundError, Observable } from 'rxjs';
 
 @Injectable()
 export class CurrentUserInterceptor implements NestInterceptor {
@@ -19,8 +19,14 @@ export class CurrentUserInterceptor implements NestInterceptor {
     const userId = request.session?.userId;
 
     if (userId) {
-      const user = await this.usersService.findOneById(userId);
-      request.currentUser = user;
+      try {
+        const user = await this.usersService.findOneById(userId);
+        request.currentUser = user;
+      } catch (err) {
+        if (err instanceof NotFoundError) {
+          request.session.userId = null;
+        }
+      }
     }
 
     return next.handle();

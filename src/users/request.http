@@ -1,5 +1,5 @@
 ### GET USER
-GET http://localhost:3000/auth/9338c7ce-dfad-4e3a-9d4a-59a05f406d4b
+GET http://localhost:3000/auth/a41870bd-2b30-4e23-8805-37b48908f98a
 
 ### GET USERS
 GET http://localhost:3000/auth?email=josh@ritter.com
@@ -9,8 +9,8 @@ POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
-  "email": "jim@reeves.com",
-  "password": "jim"
+  "email": "test6@test.com",
+  "password": "test3"
 }
 
 ### SIGNIN
@@ -18,8 +18,8 @@ POST http://localhost:3000/auth/signin
 Content-Type: application/json
 
 {
-  "email": "justin@hawkins.com",
-  "password": "justin"
+  "email": "test2@test.com",
+  "password": "test1"
 }
 
 ### GET PROFILE
