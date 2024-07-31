@@ -1,0 +1,12 @@
+POST http://localhost:3000/reports
+Content-Type: application/json
+
+{
+  "price": 100000,
+  "make": "Test",
+  "model": "Tester",
+  "year": 2020,
+  "lng": "1",
+  "lat": "1",
+  "mileage": 100000
+}
