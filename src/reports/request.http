@@ -1,3 +1,4 @@
+### CREATE REPORT
 POST http://localhost:3000/reports
 Content-Type: application/json
 
@@ -9,4 +10,13 @@ Content-Type: application/json
   "lng": "1",
   "lat": "1",
   "mileage": 100000
+}
+
+
+### UPDATE APPROVED
+PATCH http://localhost:3000/reports/3048b056-0dea-4c7c-88ea-fbaba5357377
+Content-Type: application/json
+
+{
+  "approved": false
 }

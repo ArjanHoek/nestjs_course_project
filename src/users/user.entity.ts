@@ -12,6 +12,9 @@ export class User {
   @Column()
   hash: string;
 
+  @Column({ default: true })
+  isAdmin: boolean;
+
   @OneToMany(() => Report, ({ user }) => user)
   reports: Report[];
 }

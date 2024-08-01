@@ -26,16 +26,11 @@ export class UsersService {
   private async findOneBy(where: FindOptionsWhere<User>) {
     const user = await this.repo.findOne({
       where,
-      relations: { reports: true },
       select: {
         id: true,
         email: true,
         hash: true,
-        reports: {
-          id: true,
-          make: true,
-          model: true,
-        },
+        isAdmin: true,
       },
     });
 
