@@ -3,20 +3,24 @@ POST http://localhost:3000/reports
 Content-Type: application/json
 
 {
-  "price": 100000,
-  "make": "Test",
-  "model": "Tester",
-  "year": 2020,
-  "lng": "1",
-  "lat": "1",
-  "mileage": 100000
+  "make": "ford",
+  "model": "mustang",
+  "year": 1982,
+  "lng": 45,
+  "lat": 45,
+  "mileage": 50000,
+  "price": 20000
 }
 
 
 ### UPDATE APPROVED
-PATCH http://localhost:3000/reports/3048b056-0dea-4c7c-88ea-fbaba5357377
+PATCH http://localhost:3000/reports/50bf0312-7799-46b5-8188-33c2aa7986c3
 Content-Type: application/json
 
 {
-  "approved": false
+  "approved": true
 }
+
+
+### GET ESTIMATE
+GET http://localhost:3000/reports?make=ford&model=mustang&lng=45&lat=45&mileage=20000&year=1981
