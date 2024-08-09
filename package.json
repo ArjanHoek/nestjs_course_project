@@ -17,7 +17,13 @@
     "test:watch": "cross-env NODE_ENV=test jest --watch --maxWorkers=1",
     "test:cov": "cross-env NODE_ENV=test jest --coverage",
     "test:debug": "cross-env NODE_ENV=test node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "cross-env NODE_ENV=test jest --config ./jest-e2e.config.ts"
+    "test:e2e": "cross-env NODE_ENV=test jest --config ./jest-e2e.config.ts",
+    "typeorm": "ts-node --require tsconfig-paths/register ./node_modules/typeorm/cli",
+    "migration:generate": "cross-env NODE_ENV=development npm run typeorm migration:generate  -- -d ./typeorm.config.ts ./migrations/%npm_config_name%",
+    "migration:run": "cross-env NODE_ENV=development npm run typeorm migration:run -- -d ./typeorm.config.ts",
+    "migration:create": "cross-env NODE_ENV=development npm run typeorm -- migration:create ./migrations/$npm_config_name",
+    "migration:revert": "cross-env NODE_ENV=development npm run typeorm -- -d ./typeorm.config.ts migration:revert",
+    "migration:show": "cross-env NODE_ENV=development npm run typeorm -- migration:show -d ./typeorm.config.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -32,6 +38,7 @@
     "class-validator": "^0.14.1",
     "cookie-session": "^2.1.0",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
     "pg": "^8.12.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
