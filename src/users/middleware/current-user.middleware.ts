@@ -19,7 +19,6 @@ export class CurrentUserMiddleware implements NestMiddleware {
 
     const userId = session?.userId;
 
-    console.log(userId);
     if (userId) {
       try {
         const user = await this.usersService.findOneById(userId);
