@@ -52,7 +52,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
 })
 export class AppModule implements NestModule {
+  constructor(private configService: ConfigService) {}
+
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(cookieSession({ keys: ['asdfasdf'] })).forRoutes('*');
+    consumer
+      .apply(
+        cookieSession({ keys: [this.configService.get<string>('COOKIE_KEY')] }),
+      )
+      .forRoutes('*');
   }
 }
