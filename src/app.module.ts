@@ -8,12 +8,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/user.entity';
-import { Report } from './reports/report.entity';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { APP_PIPE } from '@nestjs/core';
 import cookieSession from 'cookie-session';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import * as dbConfig from '../ormconfig';
 
 @Module({
   imports: [
@@ -23,27 +22,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
     UsersModule,
     ReportsModule,
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (cfg: ConfigService) => {
-        const database = cfg.get('DB_NAME');
-
-        if (!database) {
-          throw Error('.env file not correctly loaded');
-        }
-
-        return {
-          database,
-          type: 'postgres',
-          password: cfg.get('DB_PASS'),
-          username: cfg.get('DB_USER'),
-          host: cfg.get('DB_HOST'),
-          port: +cfg.get('DB_PORT'),
-          entities: [User, Report],
-          synchronize: true,
-        };
-      },
-    }),
+    TypeOrmModule.forRoot(dbConfig as TypeOrmModuleOptions),
   ],
   controllers: [AppController],
   providers: [
